@@ -1,0 +1,58 @@
+import java.util.Random; 
+
+public class Simulation {
+
+  public static void main(String args[]) {
+    // rastgele sayı üreticisi
+    Random rnd = new Random();
+    // vezne önündeki kuyruk
+    Queue q = new Queue();
+    // ödeme noktasının kaç dakika süre ile açık kalacağı
+    final int KAPANIS=4;
+    // simülasyonun kaçıncı dakikası olduğu
+    int dk=0; 
+    // servis verilmekte olan müşterinin sıra numarası ve kaç dakikalık daha işlemi kaldığı
+    int mno=0, kalan=0; 
+    // o sırada ödeme noktasına yeni giren müşterinin kaç dakikalık işlemi olduğu 
+    int yeni;
+    // veznenin boş olup olmadığı
+    boolean bos=true;
+
+    System.out.println("Odeme noktasi acildi:");
+    while(true) {
+      System.out.println(dk+". dk:");
+
+      if(dk<KAPANIS) {             // ödeme noktası açıksa
+        yeni=rnd.nextInt(3)+1;     // 1-3 dakikalık işlemi olan yeni müşteri bir geldi
+        System.out.println("\tyeni bir musteri kuyruga girdi; "+yeni+" dakikalik islemi var");
+        q.insert(yeni);            // kuyruğa girdi
+      }
+
+      if(dk==KAPANIS) 
+        System.out.println("\todeme noktasi kapandi");
+
+      if(!bos) {                   // vezne boş değilse
+        kalan--;                   // işlemi yapılan müşterinin kalan işlem süresinden 1 dk daha geçti
+        if(kalan==0) {             // işlemi bittiyse
+          System.out.println("\t"+mno+". musteriye verilen hizmet tamamlandi");
+          bos=true;                // vezne artık boş
+        }
+      }
+
+      // kalan işlem süresi yoksa ve ödeme noktası kapanmışsa ve kuyrukta bekleyen yoksa, çık
+      if(kalan==0 && dk>=KAPANIS && q.empty()) break;
+
+      if(bos && !q.empty()) {      // vezne boşa ve kuyrukta bekleyen varsa
+         kalan=q.delete();         // öndeki müşteriyi al, işlemini başlat
+         mno++;                    // müşteri sıra numarasını ilerlet
+         bos=false;                // vezne boş değil
+         System.out.println("\t"+mno+". musteriye hizmet verilmeye baslandi");
+      }
+
+      dk++;                        // bir dakika daha geçmiş oldu
+
+    } // while 
+    System.out.println("\tvezne kapandi");
+  }  
+       
+}
